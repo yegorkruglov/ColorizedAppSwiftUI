@@ -8,14 +8,52 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var red = Double.random(in: 0...255).rounded()
+    @State private var green = Double.random(in: 0...255).rounded()
+    @State private var blue = Double.random(in: 0...255).rounded()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        ZStack {
+            Color(.lightGray)
+                .ignoresSafeArea()
+            
+            
+            VStack {
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(Color(
+                        red: red / 255,
+                        green: green / 255,
+                        blue: blue / 255)
+                    )
+                    .frame(height: 200)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.white, lineWidth: 5)
+                    }
+                
+                HStack {
+                    Text("\(lround(red))")
+                        .foregroundColor(.red)
+                    
+                    Slider(value: $red, in: 0...255, step: 1)
+                    
+                    TextField("", value: $red, format: .number)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 50)
+                        .keyboardType(.decimalPad)
+                        
+
+                    
+                }
+                
+                
+                
+                
+                
+                Spacer()
+            }
+            .padding()
         }
-        .padding()
     }
 }
 
