@@ -11,6 +11,13 @@ struct ContentView: View {
     @State private var red = Double.random(in: 0...255).rounded()
     @State private var green = Double.random(in: 0...255).rounded()
     @State private var blue = Double.random(in: 0...255).rounded()
+    @State private var alertPresented = false
+
+    enum Field {
+        case red, green, blue
+    }
+    
+    @FocusState private var focusField: Field?
     
     var body: some View {
         ZStack {
@@ -32,13 +39,68 @@ struct ContentView: View {
                     }
                 
                 SliderStackView(colorCompanment: $red, colorOfText: .red)
+                    .focused($focusField, equals: .red)
                 SliderStackView(colorCompanment: $green, colorOfText: .green)
+                    .focused($focusField, equals: .green)
                 SliderStackView(colorCompanment: $blue, colorOfText: .blue)
+                    .focused($focusField, equals: .blue)
                 
                 Spacer()
             }
             .padding()
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Button {
+                        switch focusField {
+                        case .red:
+                            focusField = .blue
+                        case .green:
+                            focusField = .red
+                        case .blue:
+                            focusField = .green
+                        case .none:
+                            focusField = .red
+                        }
+                    } label: {
+                        Image(systemName: "chevron.up")
+                    }
+
+                    Button {
+                        switch focusField {
+                        case .red:
+                            focusField = .green
+                        case .green:
+                            focusField = .blue
+                        case .blue:
+                            focusField = .red
+                        case .none:
+                            focusField = .red
+                        }
+                        
+                    } label: {
+                        Image(systemName: "chevron.down")
+                    }
+
+                    
+                    Spacer()
+                    
+                    Button("Done") {
+                        checkData()
+                    }
+                    .alert("Wrong format", isPresented: $alertPresented, actions: {}) {
+                        Text("Value must be in a range 0...255")
+                    }
+                }
+            }
         }
+    }
+    
+    private func checkData() {
+        if !(0...255).contains(red) || !(0...255).contains(green) || !(0...255).contains(blue) {
+            alertPresented.toggle()
+            return
+        }
+        focusField = nil
     }
 }
 
@@ -64,9 +126,6 @@ struct SliderStackView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .frame(width: 45)
                 .keyboardType(.decimalPad)
-            
-            
-            
         }
     }
 }
