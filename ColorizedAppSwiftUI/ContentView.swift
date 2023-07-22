@@ -18,7 +18,7 @@ struct ContentView: View {
                 .ignoresSafeArea()
             
             
-            VStack {
+            VStack(spacing: 20) {
                 RoundedRectangle(cornerRadius: 20)
                     .foregroundColor(Color(
                         red: red / 255,
@@ -31,24 +31,9 @@ struct ContentView: View {
                             .stroke(Color.white, lineWidth: 5)
                     }
                 
-                HStack {
-                    Text("\(lround(red))")
-                        .foregroundColor(.red)
-                    
-                    Slider(value: $red, in: 0...255, step: 1)
-                    
-                    TextField("", value: $red, format: .number)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 50)
-                        .keyboardType(.decimalPad)
-                        
-
-                    
-                }
-                
-                
-                
-                
+                SliderStackView(colorCompanment: $red, colorOfText: .red)
+                SliderStackView(colorCompanment: $green, colorOfText: .green)
+                SliderStackView(colorCompanment: $blue, colorOfText: .blue)
                 
                 Spacer()
             }
@@ -60,5 +45,28 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct SliderStackView: View {
+    @Binding var colorCompanment: Double
+    var colorOfText: Color
+    
+    var body: some View {
+        HStack {
+            Text("\(lround(colorCompanment))")
+                .foregroundColor(colorOfText)
+                .frame(width: 45)
+            
+            Slider(value: $colorCompanment, in: 0...255, step: 1)
+            
+            TextField("", value: $colorCompanment, format: .number)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .frame(width: 45)
+                .keyboardType(.decimalPad)
+            
+            
+            
+        }
     }
 }
