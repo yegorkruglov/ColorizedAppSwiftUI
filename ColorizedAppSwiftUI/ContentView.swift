@@ -10,9 +10,9 @@ import SwiftUI
 struct ContentView: View {
     @State private var red = Double.random(in: 0...255).rounded()
     @State private var green = Double.random(in: 0...255).rounded()
-    @State private var blue = Double.random(in: 0...255).rounded()
+    @State private var blue = Double.random(in: 0...255).rounded()    
     @State private var alertPresented = false
-
+    
     enum Field {
         case red, green, blue
     }
@@ -51,41 +51,28 @@ struct ContentView: View {
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Button {
-                        switch focusField {
-                        case .red:
-                            focusField = .blue
-                        case .green:
-                            focusField = .red
-                        case .blue:
-                            focusField = .green
-                        case .none:
-                            focusField = .red
-                        }
-                    } label: {
-                        Image(systemName: "chevron.up")
-                    }
-
-                    Button {
-                        switch focusField {
-                        case .red:
-                            focusField = .green
-                        case .green:
-                            focusField = .blue
-                        case .blue:
-                            focusField = .red
-                        case .none:
-                            focusField = .red
+                        if colorsCompartmentsAreValid() {
+                            switchUp()
                         }
                         
                     } label: {
+                        Image(systemName: "chevron.up")
+                    }
+                    
+                    Button {
+                        if colorsCompartmentsAreValid() {
+                            switchDown()
+                        }
+                    } label: {
                         Image(systemName: "chevron.down")
                     }
-
                     
                     Spacer()
                     
                     Button("Done") {
-                        checkData()
+                        if colorsCompartmentsAreValid() {
+                            focusField = nil
+                        }
                     }
                     .alert("Wrong format", isPresented: $alertPresented, actions: {}) {
                         Text("Value must be in a range 0...255")
@@ -95,12 +82,39 @@ struct ContentView: View {
         }
     }
     
-    private func checkData() {
+    private func colorsCompartmentsAreValid() -> Bool {
         if !(0...255).contains(red) || !(0...255).contains(green) || !(0...255).contains(blue) {
             alertPresented.toggle()
-            return
+            return false
+        } else {
+            return true
         }
-        focusField = nil
+    }
+    
+    private func switchDown() {
+        switch focusField {
+        case .red:
+            focusField = .green
+        case .green:
+            focusField = .blue
+        case .blue:
+            focusField = .red
+        case .none:
+            focusField = .red
+        }
+    }
+    
+    private func switchUp() {
+        switch focusField {
+        case .red:
+            focusField = .blue
+        case .green:
+            focusField = .red
+        case .blue:
+            focusField = .green
+        case .none:
+            focusField = .red
+        }
     }
 }
 
